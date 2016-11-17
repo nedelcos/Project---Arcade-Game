@@ -50,7 +50,8 @@ Player.prototype.update = function(dt) {
   }
   // TODO: Set timeout and a congrats message :)
   else if (this.y === 0) {
-    this.y = 300;
+    this.resetPlayer();
+    alert("you won!")
   }
   else if (this.y < 0) {
     this.y = 0;
@@ -60,16 +61,24 @@ Player.prototype.update = function(dt) {
   }
 };
 
+Player.prototype.resetPlayer = function() {
+  this.x = 200;
+  this.y = 300;
+}
+
 Player.prototype.checkCollisions = function() {
   for (i = 0; i < allEnemies.length; i++) {
-    if (player.x === allEnemies[i].x && player.y === allEnemies[i].y) {
-      player.x = 200;
-      player.y = 300;
+    if (this.x < allEnemies[i].x + 75 &&
+        this.x + 65 > allEnemies[i].x &&
+        this.y < allEnemies[i].y + 50 &&
+        this.y + 70 > allEnemies[i].y) {
+      this.resetPlayer()
+      alert("The bug ate you!")
     }
   }
 }
 
-Player.prototype.render = function () {
+Player.prototype.render = function() {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
