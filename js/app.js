@@ -38,9 +38,11 @@ var Player = function(x,y) {
   this.sprite = 'images/char-boy.png';
   this.x = x;
   this.y = y;
+  this.score = 0;
 };
-// This class requires an update(), render() and
-// a handleInput() method.
+// This method does 2 things
+// 1. It keeps the player from going out canvas
+// 2. It keeps track of each time the player reaches water (scoreboard system)
 Player.prototype.update = function(dt) {
   if (this.x < 0) {
     this.x = 0;
@@ -48,10 +50,11 @@ Player.prototype.update = function(dt) {
   else if (this.x > 400) {
     this.x = 400;
   }
-  // TODO: Set timeout and a congrats message :)
   else if (this.y === 0) {
     this.resetPlayer();
-    alert("you won!")
+    this.score += 1;
+    $("#score").empty();
+    $("#score").append("Your Score:" + " " + player.score);
   }
   else if (this.y < 0) {
     this.y = 0;
@@ -61,11 +64,13 @@ Player.prototype.update = function(dt) {
   }
 };
 
+// This method resets the player's position to default, each time it is called
 Player.prototype.resetPlayer = function() {
   this.x = 200;
   this.y = 300;
 }
 
+//This method calls resetPlayer method each time the player and a bug are in the same position on canvas (same x and y)
 Player.prototype.checkCollisions = function() {
   for (i = 0; i < allEnemies.length; i++) {
     if (this.x < allEnemies[i].x + 75 &&
@@ -78,10 +83,12 @@ Player.prototype.checkCollisions = function() {
   }
 }
 
+// This method draws the player in the canvas
 Player.prototype.render = function() {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+// This method tells the player to increase or decreas x or y position when the assigned keys are pressed
 Player.prototype.handleInput = function(key) {
   switch(key) {
       case "up":
@@ -100,15 +107,16 @@ Player.prototype.handleInput = function(key) {
   };
 
 
-// Now instantiate your objects.
-var bugSlow = new Enemy(0, 60, 125);
-var bugMed = new Enemy(-20, 140, 190);
-var bugFast = new Enemy(-80, 225, 270);
+
 // Place all enemy objects in an array called allEnemies
-var allEnemies = [bugSlow, bugFast, bugMed];
+var allEnemies = [];
+allEnemies[0] = new Enemy(0, 60, 125);
+allEnemies[1] = new Enemy(-20, 140, 190);
+allEnemies[2] = new Enemy(-80, 225, 270);
 
 // Place the player object in a variable called player
-var player = new Player(200,300);
+var player = new Player(200,300,0);
+$("#score").append("let's see how far you cand get")
 player.update();
 
 
@@ -124,3 +132,6 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+
+// SCOREBOARD
